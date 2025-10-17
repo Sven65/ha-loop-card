@@ -8,6 +8,7 @@ export type Entity = {
 
 export type LoopCardStyles = {
     card: Record<string, string>[];
+    children: Record<string, string>[];
 };
 
 export type LoopCardConfig = {

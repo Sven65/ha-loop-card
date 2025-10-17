@@ -71,6 +71,19 @@ class LoopCard extends HTMLElement {
 		const style = document.createElement('style')
 		style.textContent = ''
 
+		let childrenCssText = ''
+		if (this.styles?.children && Array.isArray(this.styles.children)) {
+			const customChildrenStyles = this.styles.children
+			childrenCssText = customChildrenStyles
+				.reduce((acc: string[], styleObj: Record<string, string>) => {
+					Object.entries(styleObj).forEach(([ key, value ]) => {
+						acc.push(`${key}: ${value};`)
+					})
+					return acc
+				}, [])
+				.join(' ')
+		}
+
 		if (this.styles?.card && Array.isArray(this.styles.card)) {
 			const customStyles = this.styles.card
 
@@ -86,6 +99,11 @@ class LoopCard extends HTMLElement {
 
 			// Apply the combined styles to the ha-card element
 			style.textContent = `ha-card { ${styleRules} }`
+		}
+
+		if (childrenCssText) {
+			// style applied to host child elements (may not penetrate child shadow DOM, so we also set inline)
+			style.textContent += `\nha-card > * { ${childrenCssText} }`
 		}
 
 		this.entities.forEach(entityObj => {
