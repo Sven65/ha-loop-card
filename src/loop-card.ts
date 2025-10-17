@@ -1,4 +1,4 @@
-import { Entity, LoopCardConfig } from './types'
+import { Entity, LoopCardConfig, LoopCardStyles } from './types'
 import { LovelaceCard, LovelaceCardConfig, HomeAssistant } from 'custom-card-helpers'
 
 import { version } from '../package.json'
@@ -7,6 +7,7 @@ class LoopCard extends HTMLElement {
 	private entities: Entity[] = []
 	private hassObj?: HomeAssistant
 	private cardTemplate?: LovelaceCardConfig
+	private styles?: LoopCardStyles
 
 	set hass(hass: HomeAssistant) {
 		this.hassObj = hass
@@ -27,9 +28,12 @@ class LoopCard extends HTMLElement {
 
 		this.entities = config.entities
 		this.cardTemplate = config.card
+		this.styles = config.styles
 	}
 
 	connectedCallback() {
+		this.attachShadow({ mode: 'open' })
+
 		 console.log(
 			`%cLoop Card%c [${version}] %cis enabled`,
 			'color: white; background: #0078D7; padding: 2px 4px; border-radius: 2px;',
@@ -55,10 +59,34 @@ class LoopCard extends HTMLElement {
 			return
 		}
 
+		if (this.shadowRoot) {
+			this.shadowRoot.innerHTML = ''
+		}
+
 		// Clear existing content before rendering
 		this.innerHTML = ''
 
 		const haCard = document.createElement('ha-card')
+
+		const style = document.createElement('style')
+		style.textContent = ''
+
+		if (this.styles?.card && Array.isArray(this.styles.card)) {
+			const customStyles = this.styles.card
+
+			// Combine all style objects into a single style string
+			const styleRules = customStyles
+				.reduce((acc: string[], styleObj: Record<string, string>) => {
+					Object.entries(styleObj).forEach(([ key, value ]) => {
+						acc.push(`${key}: ${value};`)
+					})
+					return acc
+				}, [])
+				.join(' ')
+
+			// Apply the combined styles to the ha-card element
+			style.textContent = `ha-card { ${styleRules} }`
+		}
 
 		this.entities.forEach(entityObj => {
 			const cardType = this.cardTemplate!.type.startsWith('custom:')
@@ -102,7 +130,10 @@ class LoopCard extends HTMLElement {
 			haCard.appendChild(card)
 		})
 
-		this.appendChild(haCard)
+		if (this.shadowRoot) {
+			this.shadowRoot.appendChild(style)
+			this.shadowRoot.appendChild(haCard)
+		}
 	}
 }
 
