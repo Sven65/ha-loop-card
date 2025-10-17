@@ -1,0 +1,27 @@
+{
+  "name": "ha-loop-card",
+  "version": "1.0.0",
+  "description": "Custom Home Assistant Card to loop through entities and render a card for each.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "scp dist/loop-card.js homeassistant:/config/www/community/loop-card/loop-card.js",
+    "build": "rollup -c",
+    "build:deploy": "npm run build && npm run deploy"
+  },
+  "author": "Mackan",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "custom-card-helpers": "^1.9.0",
+    "eslint": "^9.37.0",
+    "rollup": "^4.52.4",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  }
+}
