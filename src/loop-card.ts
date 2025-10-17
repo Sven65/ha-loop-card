@@ -106,6 +106,11 @@ class LoopCard extends HTMLElement {
 			style.textContent += `\nha-card > * { ${childrenCssText} }`
 		}
 
+		if (this.styles?.extra) {
+			// Append extra styles for advanced CSS rules like media queries
+			style.textContent += `\n${this.styles.extra}`
+		}
+
 		this.entities.forEach(entityObj => {
 			const cardType = this.cardTemplate!.type.startsWith('custom:')
 				? this.cardTemplate!.type.replace('custom:', '')

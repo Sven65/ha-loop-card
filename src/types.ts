@@ -9,6 +9,7 @@ export type Entity = {
 export type LoopCardStyles = {
     card: Record<string, string>[];
     children: Record<string, string>[];
+    extra?: string; // Added optional extra property for advanced CSS rules
 };
 
 export type LoopCardConfig = {
